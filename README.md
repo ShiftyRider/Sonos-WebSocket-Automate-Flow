@@ -16,18 +16,18 @@ Instead of switching foreground apps, this workflow keeps video uninterrupted by
 
 Why [websocat](https://github.com/vi/websocat/) Over Full CLI Wrappers
 
-• Self-Contained on Android TV: */data/local/tmp/websocat* is a [single static binary](https://github.com/vi/websocat/releases/download/v1.14.1/websocat.armv7-linux-androideabi) eliminates the need for an external Linux host, Python environment, or companion server
+• Self-Contained on Android TV: */data/local/tmp/websocat* is a [single static binary](https://github.com/vi/websocat/releases/download/v1.14.1/websocat.armv7-linux-androideabi) that eliminates the need for an external Linux host, Python environment, or companion server
 
 • Protocol Precision: Talking directly to Sonos's local S2 WebSocket API bypasses legacy UPnP container restrictions like Error 804
 
-# Sonos SpotifyRecents Flow
+# SpotifyRecents
 ![flowchart](screenshots/SpotifyRecents.png)
 
 # 1. Flow Logic Summary
 
-Goal: If the Sonos speaker isn't currently playing Spotify, play the previous Spotify state. Otherwise, fetch the user's recent Spotify playlists via WebSocket, let them pick one, and play via WebSocket. Note that simplicity and self-containent preferences usually dictate HTTP Request blocks but for these (Section 4, below) steps, UPnP is insufficient.
+Goal: If the Sonos speaker isn't currently playing Spotify, play the previous Spotify state. Otherwise, fetch the user's recent Spotify playlists via WebSocket, let them pick one, and play via WebSocket. Note that simplicity and self-containment preferences usually dictate HTTP Request blocks but for these (Section 4, below) blocks, UPnP is insufficient.
 
-# 2. UPnP HTTP Request Pill Badges (Port 1400)
+# 2. UPnP HTTP Request blocks (Port 1400)
 
 • Block 40: HTTP: Play — Wakes the speaker and forces active transport
 
@@ -35,9 +35,9 @@ Goal: If the Sonos speaker isn't currently playing Spotify, play the previous Sp
 
 • Block 35: HTTP: SetAVTransportURI — Loads the hardcoded Spotify URI (from GetPositionInfo, valid long-term) when falling back or not playing Spotify
 
-• Block 36: HTTP: Play — Starts playback of the loaded or selected stream
+• Block 36: HTTP: Play — Plays what's finally ready
 
-# 3. Logic & Decision Speech Bubbles
+# 3. Logic & Decision blocks
 
 • Block 32 (contains(r, "spotify")):
 	• YES: Speaker is already on Spotify → fetch recent playlists for user selection
@@ -52,7 +52,7 @@ Goal: If the Sonos speaker isn't currently playing Spotify, play the previous Sp
 • Block 42 (Catch Failure):
 	• Catches expired sessions or WebSocket/transport errors inconsequential to flow
 
-# 4. WebSocket Shell Command Callouts (Redacted for Public GitHub)
+# 4. WebSocket Shell Command blocks (Port 1443...redacted for GitHub)
 
 • Block 13 (WS CMD #1: Fetch History)
 */data/local/tmp/req.json*
